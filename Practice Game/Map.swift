@@ -16,22 +16,22 @@ enum Walkability {
 class MapTile: NSObject {
   var walkability: Walkability
 //  var index: Int
-  var left: MapTile?
-  var right: MapTile?
-  var up: MapTile?
-  var down: MapTile?
+  var left: MapTile?, right: MapTile?, up: MapTile?, down: MapTile?
   weak var map: Map?
   
   init(walk: Walkability, index: Int) {
     walkability = walk
 //    self.index = index
   }
+  
+  func isWalkable() -> Bool {
+    return walkability != .Obstacle
+  }
 }
 
 class Map: NSObject {
   var allTiles: [MapTile]
-  var height: Int
-  var width: Int
+  let height: Int, width: Int
   
   init(height: Int, width: Int) {
     self.height = height
@@ -41,22 +41,22 @@ class Map: NSObject {
   
   // Builds the game map. Tiles at indeces contained in NOWALK will have obstacles, and the rest will be normal.
   func populateMap(noWalk: [Int] = []) {
-    let count = height * width
-    for i in 0..<count {
-      var tmp = MapTile(walk: .Normal, index: i)
+    let numSquares = height * width
+    for i in 0..<numSquares {
+      let newTile = MapTile(walk: .Normal, index: i)
       if contains(noWalk, i) {
-        tmp.walkability = .Obstacle
+        newTile.walkability = .Obstacle
       }
-      tmp.map = self
+      newTile.map = self
       if i / height != 0 {
-        tmp.up = allTiles[i - height]
-        allTiles[i - height].down = tmp
+        newTile.up = allTiles[i - height]
+        allTiles[i - height].down = newTile
       }
       if i % width != 0 {
-        tmp.left = allTiles[i - 1]
-        allTiles[i - 1].right = tmp
+        newTile.left = allTiles[i - 1]
+        allTiles[i - 1].right = newTile
       }
-      allTiles.append(tmp)
+      allTiles.append(newTile)
     }
   }
   
@@ -65,37 +65,28 @@ class Map: NSObject {
 //    return abs((tile1.index % width) - (tile2.index % width)) + abs((tile1.index / height) - (tile2.index / height));
 //  }
   
-  /* Uses breadth-first search to return the range a character can move, taking obstacles and number of moves
-   * into account. */
-  func reachable(by: Character) -> [MapTile] {
+  /* Uses breadth-first search to return the range a character can move from SPACE using no more than NUMMOVES moves.
+   * Takes obstacles into account. */
+  func reachable(space: MapTile, numMoves: Int) -> [MapTile] {
     var range = [MapTile]()
-    range.append(by.space)
+    range.append(space)
     var level = 0
     var count = 0
     var curr = 0
-    var tmp: MapTile
-    while level < by.numMoves {
+    while level < numMoves {
       count = range.count
       for i in curr..<count {
-        if let tmp = range[i].left {
-          if tmp.walkability != .Obstacle && !contains(range, tmp) {
-            range.append(tmp)
-          }
+        if let left = range[i].left where (left.isWalkable() && !contains(range, left)) {
+          range.append(left)
         }
-        if let tmp = range[i].right {
-          if tmp.walkability != .Obstacle && !contains(range, tmp) {
-            range.append(tmp)
-          }
+        if let right = range[i].right where (right.isWalkable() && !contains(range, right)){
+          range.append(right)
         }
-        if let tmp = range[i].up {
-          if tmp.walkability != .Obstacle && !contains(range, tmp) {
-            range.append(tmp)
-          }
+        if let up = range[i].up where up.isWalkable() && !contains(range, up) {
+          range.append(up)
         }
-        if let tmp = range[i].down {
-          if tmp.walkability != .Obstacle && !contains(range, tmp) {
-            range.append(tmp)
-          }
+        if let down = range[i].down where (down.isWalkable() && !contains(range, down)) {
+          range.append(down)
         }
       }
       curr = count

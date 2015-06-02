@@ -16,6 +16,7 @@
 		DF336A741B1CD6E70094B9A5 /* Practice_GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A731B1CD6E70094B9A5 /* Practice_GameTests.swift */; };
 		DF336A7E1B1CD7440094B9A5 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A7D1B1CD7440094B9A5 /* Character.swift */; };
 		DF336A801B1CFB4B0094B9A5 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A7F1B1CFB4B0094B9A5 /* Map.swift */; };
+		DF336A821B1E5F750094B9A5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A811B1E5F750094B9A5 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		DF336A731B1CD6E70094B9A5 /* Practice_GameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Practice_GameTests.swift; sourceTree = "<group>"; };
 		DF336A7D1B1CD7440094B9A5 /* Character.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; tabWidth = 2; };
 		DF336A7F1B1CFB4B0094B9A5 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; tabWidth = 2; usesTabs = 0; };
+		DF336A811B1E5F750094B9A5 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 				DF336A5D1B1CD6E60094B9A5 /* art.scnassets */,
 				DF336A5F1B1CD6E60094B9A5 /* GameViewController.swift */,
 				DF336A7F1B1CFB4B0094B9A5 /* Map.swift */,
+				DF336A811B1E5F750094B9A5 /* MapViewController.swift */,
 				DF336A7D1B1CD7440094B9A5 /* Character.swift */,
 				DF336A611B1CD6E60094B9A5 /* Main.storyboard */,
 				DF336A641B1CD6E60094B9A5 /* Images.xcassets */,
@@ -225,6 +228,7 @@
 				DF336A801B1CFB4B0094B9A5 /* Map.swift in Sources */,
 				DF336A7E1B1CD7440094B9A5 /* Character.swift in Sources */,
 				DF336A601B1CD6E60094B9A5 /* GameViewController.swift in Sources */,
+				DF336A821B1E5F750094B9A5 /* MapViewController.swift in Sources */,
 				DF336A5C1B1CD6E60094B9A5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

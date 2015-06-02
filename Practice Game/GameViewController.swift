@@ -12,9 +12,6 @@ import SceneKit
 
 class GameViewController: UIViewController {
   
-  override func loadView() {
-  }
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
