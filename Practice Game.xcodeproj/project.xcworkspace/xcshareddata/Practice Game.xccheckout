@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>DF4344AD-2A74-43A0-A730-408B62394F82</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>0158F6A844F1242045B39B62A13A662DC525F8CF</key>
+		<string>https://github.intuit.com/dnatoli/Practice-Game.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Practice Game.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>0158F6A844F1242045B39B62A13A662DC525F8CF</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.intuit.com/dnatoli/Practice-Game.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>0158F6A844F1242045B39B62A13A662DC525F8CF</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>0158F6A844F1242045B39B62A13A662DC525F8CF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Practice%20Game</string>
+		</dict>
+	</array>
+</dict>
+</plist>
