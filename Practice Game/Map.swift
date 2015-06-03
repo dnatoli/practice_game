@@ -83,5 +83,9 @@ class Map: NSObject {
       allTiles[x][y].walkability = .Obstacle
     }
   }
+  
+  func tileAt(x: Int, y: Int) -> MapTile {
+    return allTiles[x][y]
+  }
 }
 
