@@ -10,10 +10,8 @@ import UIKit
 
 class Character: NSObject {
   var health: Int
-  var numMoves: Int
-  var damage: Int
-  var name: String
   var space: MapTile
+  let numMoves: Int, damage: Int, name: String
   
   init(player name: String, start: MapTile) {
     health = 100
