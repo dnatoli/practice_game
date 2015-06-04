@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CharacterView: UIView {
+class CharacterView: UIButton {
   
   let character: Character
   

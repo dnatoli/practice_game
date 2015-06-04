@@ -44,15 +44,15 @@ class MapViewController: UIViewController {
     for player in map.players {
       let start = tileViewAt(player.position)
       let charView = CharacterView(character: player, frame: start.frame)
-      charView.userInteractionEnabled = false
       view.addSubview(charView)
+      charView.addTarget(self, action: "playerSelected:", forControlEvents: .TouchUpInside)
       playerViews.append(charView)
     }
     for enemy in map.enemies {
       let start = tileViewAt(enemy.position)
       let charView = CharacterView(character: enemy, frame: start.frame)
-      charView.userInteractionEnabled = false
       view.addSubview(charView)
+      charView.addTarget(self, action: "enemySelected:", forControlEvents: .TouchUpInside)
       enemyViews.append(charView)
     }
   }
@@ -61,12 +61,19 @@ class MapViewController: UIViewController {
     return tileViews[position.row][position.col]
   }
   
-  func tileSelected(sender: UIButton) {
+  func tileSelected(sender: MapTileView) {
     let charView = playerViews[0]
     UIView.animateWithDuration(0.7, animations: {
-      charView.frame = sender.frame
       charView.center = sender.center
     })
+  }
+  
+  func playerSelected(sender: CharacterView) {
+    println("Player was selected")
+  }
+  
+  func enemySelected(sender: CharacterView) {
+    println("Enemy was selected")
   }
   
   override func supportedInterfaceOrientations() -> Int {
