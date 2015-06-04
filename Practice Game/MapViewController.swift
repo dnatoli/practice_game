@@ -12,23 +12,28 @@ class MapViewController: UIViewController {
   
   var map: Map!
   var tileViews: [[MapTileView]]!
+  var playerViews: [CharacterView]!
+  var enemyViews: [CharacterView]!
   
   override func loadView() {
-    map = Map(height: 9, width: 16)
-    map.populateMap(noWalk: [])
+    map = Map(rows: 9, columns: 16, numPlayers: 1, numEnemies: 1)
+    map.populateMap(noWalk: [(0, 0)])
     tileViews = [[MapTileView]]()
+    playerViews = [CharacterView]()
+    enemyViews = [CharacterView]()
     let backgroundFrame = UIScreen.mainScreen().bounds
     view = UIView(frame: backgroundFrame)
-    let buttonWidth = backgroundFrame.width / CGFloat(map.width)
-    let buttonHeight = backgroundFrame.height / CGFloat(map.height)
-    for i in 0..<map.width {
+    let buttonWidth = (backgroundFrame.width - 50) / CGFloat(map.columns)
+    let buttonHeight = (backgroundFrame.height - 50) / CGFloat(map.rows)
+    for i in 0..<map.columns {
       tileViews.append([MapTileView]())
-      for j in 0..<map.height {
-        let frame = CGRect(x: CGFloat(i) * buttonWidth,
-          y: CGFloat(j) * buttonHeight,
+      for j in 0..<map.rows {
+        let frame = CGRect(x: 25 + CGFloat(i) * buttonWidth,
+          y: 25 + CGFloat(j) * buttonHeight,
           width: buttonWidth,
           height: buttonHeight)
-        let newTile = MapTileView(frame: frame, x: i, y: j)
+        let newTile = MapTileView(tile: map.tileAt((i, j)), frame: frame)
+        map.tileAt((i, j)).view = newTile
         newTile.layer.borderColor = UIColor.blackColor().CGColor
         newTile.layer.borderWidth = 1.5
         view.addSubview(newTile)
@@ -36,10 +41,32 @@ class MapViewController: UIViewController {
         tileViews[i].append(newTile)
       }
     }
+    for player in map.players {
+      let start = tileViewAt(player.position)
+      let charView = CharacterView(character: player, frame: start.frame)
+      charView.userInteractionEnabled = false
+      view.addSubview(charView)
+      playerViews.append(charView)
+    }
+    for enemy in map.enemies {
+      let start = tileViewAt(enemy.position)
+      let charView = CharacterView(character: enemy, frame: start.frame)
+      charView.userInteractionEnabled = false
+      view.addSubview(charView)
+      enemyViews.append(charView)
+    }
   }
   
-  func tileSelected() {
-    
+  func tileViewAt(position: (row: Int, col: Int)) -> MapTileView {
+    return tileViews[position.row][position.col]
+  }
+  
+  func tileSelected(sender: UIButton) {
+    let charView = playerViews[0]
+    UIView.animateWithDuration(0.7, animations: {
+      charView.frame = sender.frame
+      charView.center = sender.center
+    })
   }
   
   override func supportedInterfaceOrientations() -> Int {

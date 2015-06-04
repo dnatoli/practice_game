@@ -18,6 +18,7 @@
 		DF336A801B1CFB4B0094B9A5 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A7F1B1CFB4B0094B9A5 /* Map.swift */; };
 		DF336A821B1E5F750094B9A5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A811B1E5F750094B9A5 /* MapViewController.swift */; };
 		DF336A841B1F5EF10094B9A5 /* MapTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A831B1F5EF10094B9A5 /* MapTileView.swift */; };
+		DF336A861B1FD4210094B9A5 /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF336A851B1FD4210094B9A5 /* CharacterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		DF336A7F1B1CFB4B0094B9A5 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; tabWidth = 2; usesTabs = 0; };
 		DF336A811B1E5F750094B9A5 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; tabWidth = 2; };
 		DF336A831B1F5EF10094B9A5 /* MapTileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = MapTileView.swift; sourceTree = "<group>"; tabWidth = 2; };
+		DF336A851B1FD4210094B9A5 /* CharacterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = CharacterView.swift; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				DF336A7F1B1CFB4B0094B9A5 /* Map.swift */,
 				DF336A811B1E5F750094B9A5 /* MapViewController.swift */,
 				DF336A831B1F5EF10094B9A5 /* MapTileView.swift */,
+				DF336A851B1FD4210094B9A5 /* CharacterView.swift */,
 				DF336A7D1B1CD7440094B9A5 /* Character.swift */,
 				DF336A611B1CD6E60094B9A5 /* Main.storyboard */,
 				DF336A641B1CD6E60094B9A5 /* Images.xcassets */,
@@ -234,6 +237,7 @@
 				DF336A841B1F5EF10094B9A5 /* MapTileView.swift in Sources */,
 				DF336A821B1E5F750094B9A5 /* MapViewController.swift in Sources */,
 				DF336A5C1B1CD6E60094B9A5 /* AppDelegate.swift in Sources */,
+				DF336A861B1FD4210094B9A5 /* CharacterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
