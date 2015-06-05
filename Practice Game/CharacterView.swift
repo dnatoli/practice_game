@@ -30,7 +30,11 @@ class CharacterView: UIButton {
     let shape = UIBezierPath(ovalInRect: self.bounds)
     switch character.type {
     case .Player:
-      UIColor.blueColor().setFill()
+      if (character.canMove) {
+        UIColor.blueColor().setFill()
+      } else {
+        UIColor.grayColor().setFill()
+      }
     case .Enemy:
       UIColor.redColor().setFill()
     }

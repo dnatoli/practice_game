@@ -15,20 +15,19 @@ enum CharacterType {
 
 class Character: NSObject {
   var health: Int
-//  weak var space: MapTile!
-//  let view: CharacterView?
   var position: (row: Int, col: Int)
   let numMoves: Int, damage: Int, name: String
   let type: CharacterType
+  var canMove: Bool
   
   init(player name: String, start: (row: Int, col: Int)) {
     health = 100
     numMoves = 4
     damage = 25
     self.name = name
-//    space = start
     position = start
     type = .Player
+    canMove = true
   }
   
   init(enemy name: String, start: (row: Int, col: Int)) {
@@ -38,6 +37,7 @@ class Character: NSObject {
     self.name = name
     position = start
     type = .Enemy
+    canMove = true
   }
   
   func dealDamage(target: Character) {
@@ -49,8 +49,7 @@ class Character: NSObject {
   }
   
   func moveToSpace(tile: (row: Int, col: Int)) {
-//    space.occupant = nil
     position = tile
-//    tile.occupant = self
+    canMove = false
   }
 }

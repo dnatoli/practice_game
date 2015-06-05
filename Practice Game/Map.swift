@@ -15,7 +15,6 @@ enum MapTileType {
 
 class MapTile: NSObject {
   var type: MapTileType
-  var left: MapTile?, right: MapTile?, up: MapTile?, down: MapTile?
   let position: (row: Int, col: Int)
   weak var view: MapTileView!
   var occupant: Character?
@@ -29,66 +28,27 @@ class MapTile: NSObject {
   func isWalkable() -> Bool {
     return type != .Obstacle
   }
-  
-  /* Uses breadth-first search to return the range a character can move from this space using
-   * no more than NUMMOVES moves. Takes obstacles into account. */
-  func reachable(numMoves: Int) -> [MapTile] {
-    var range = [MapTile]()
-    range.append(self)
-    var level = 0
-    var count = 0
-    var curr = 0
-    while level < numMoves {
-      count = range.count
-      for i in curr..<count {
-        if let left = range[i].left where (left.isWalkable() && !contains(range, left)) {
-          range.append(left)
-        }
-        if let right = range[i].right where (right.isWalkable() && !contains(range, right)){
-          range.append(right)
-        }
-        if let up = range[i].up where up.isWalkable() && !contains(range, up) {
-          range.append(up)
-        }
-        if let down = range[i].down where (down.isWalkable() && !contains(range, down)) {
-          range.append(down)
-        }
-      }
-      curr = count
-      ++level
-    }
-    return range
-  }
 }
 
 class Map: NSObject {
   var allTiles: [[MapTile]]
-  let rows: Int, columns: Int
-  var players: [Character], enemies: [Character]
-  let playerStarts = [(0, 4)]
-  let enemyStarts = [(15, 4)]
+  let rows: Int, cols: Int
+  let playerStarts = [(4, 0)]
+  let enemyStarts = [(4, 15)]
   
-  init(rows: Int, columns: Int, numPlayers: Int, numEnemies: Int) {
-    self.rows = rows
-    self.columns = columns
+  init(size: (rows: Int, cols: Int)) {
+    rows = size.rows
+    cols = size.cols
     allTiles = [[MapTile]]()
-    players = [Character]()
-    enemies = [Character]()
-    for i in 0..<numPlayers {
-      players.append(Character(player: "Player \(i)", start: playerStarts[i]))
-    }
-    for j in 0..<numEnemies {
-      enemies.append(Character(enemy: "Enemy \(j)", start: enemyStarts[j]))
-    }
   }
   
   // Builds the game map. Tiles at points contained in NOWALK will have obstacles, and the rest will be normal.
   func populateMap(noWalk: [(Int, Int)] = []) {
-    for i in 0..<columns {
+    for row in 0..<rows {
       allTiles.append([MapTile]())
-      for j in 0..<rows {
-        let newTile = MapTile(tileType: .Normal, at: (i, j))
-        allTiles[i].append(newTile)
+      for col in 0..<cols {
+        let newTile = MapTile(tileType: .Normal, at: (row, col))
+        allTiles[row].append(newTile)
       }
     }
     for (x, y) in noWalk {
@@ -96,8 +56,40 @@ class Map: NSObject {
     }
   }
   
-  func tileAt(position: (row: Int, col: Int)) -> MapTile {
-    return allTiles[position.row][position.col]
+  // Returns the map tile at POSITION, if it is within the map's bounds. Otherwise returns nil.
+  func tileAt(position: (row: Int, col: Int)) -> MapTile? {
+    if (position.row >= 0 && position.row < rows) && (position.col >= 0 && position.col < cols) {
+      return allTiles[position.row][position.col]
+    }
+    return nil
+  }
+  
+  /* Returns an array of all tiles reachable by CHAR within its number of moves. Accounts for
+     obstacles. */
+  func rangeOf(char: Character) -> [MapTile] {
+    var range = [MapTile]()
+    let start = char.position
+    range.append(tileAt(start)!)
+    for step in 1...char.numMoves {
+      for i in 0...step {
+        if let tile = tileAt((start.row + i, start.col + step - i)) where tile.isWalkable() {
+          range.append(tile)
+        }
+        if let tile = tileAt((start.row + i, start.col - step + i)) where tile.isWalkable() && i < step {
+          range.append(tile)
+        }
+        // Conditional to prevent double counting tiles in same row as start
+        if i > 0 {
+          if let tile = tileAt((start.row - i, start.col + step - i)) where tile.isWalkable() {
+            range.append(tile)
+          }
+          if let tile = tileAt((start.row - i, start.col - step + i)) where tile.isWalkable() && i < step {
+            range.append(tile)
+          }
+        }
+      }
+    }
+    return range
   }
 }
 
