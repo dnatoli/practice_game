@@ -17,7 +17,7 @@ class MapTile: NSObject {
   var type: MapTileType
   let position: (row: Int, col: Int)
   weak var view: MapTileView!
-  var occupant: Character?
+  var enemy: Character?
   weak var map: Map!
   
   init(tileType: MapTileType, at: (Int, Int)) {
