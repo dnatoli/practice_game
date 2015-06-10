@@ -18,7 +18,7 @@ class Character: NSObject {
   var position: (row: Int, col: Int)
   let numMoves: Int, damage: Int, name: String
   let type: CharacterType
-  var canMove: Bool
+  var canMove = true, dead = false
   
   init(player name: String, start: (row: Int, col: Int)) {
     health = 100
@@ -27,7 +27,6 @@ class Character: NSObject {
     self.name = name
     position = start
     type = .Player
-    canMove = true
   }
   
   init(enemy name: String, start: (row: Int, col: Int)) {
@@ -37,7 +36,6 @@ class Character: NSObject {
     self.name = name
     position = start
     type = .Enemy
-    canMove = true
   }
   
   func dealDamage(target: Character) {
@@ -46,6 +44,10 @@ class Character: NSObject {
   
   func takeDamage(amount: Int) {
     health -= amount
+    println("ARG I'M HIT")
+    if health <= 0 {
+      dead = true
+    }
   }
   
   func moveToSpace(tile: (row: Int, col: Int)) {

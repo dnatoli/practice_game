@@ -10,10 +10,11 @@ import UIKit
 
 class Game: NSObject {
   var turn: CharacterType
-  var map: Map
+  let map: Map
   var players: [Character], enemies: [Character]
   var moving = false
   weak var controller: GameViewController?
+  var winner: CharacterType? = nil
   
   init(mapSize: (rows: Int, cols: Int), numPlayers: Int, numEnemies: Int) {
     turn = .Player
@@ -46,14 +47,31 @@ class Game: NSObject {
     return false
   }
   
-//  func canAttack(char: Character) -> [(row: Int, col: Int)]? {
-//    var result = [(row: Int, col: Int)]()
-//    let row = char.position.row, col = char.position.col
-//    for point in [(row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)] {
-//      if let enemy = tileAt(point)?.enemy {
-//        result.append(enemy.position)
-//      }
-//    }
-//    return result
-//  }
+  func attack(attacker: Character, target: Character) {
+    attacker.dealDamage(target)
+    if target.dead {
+      switch target.type {
+      case .Player:
+        println("\(target.name) died")
+        players = players.filter{$0 != target}
+      case .Enemy:
+        println("\(target.name) died")
+        players = enemies.filter{$0 != target}
+      }
+    }
+    if players.count == 0 {
+      winner = .Enemy
+    } else if enemies.count == 0 {
+      winner = .Player
+    }
+  }
+  
+  func adjacent(char: Character) -> [(Int, Int)] {
+    var result = [(Int, Int)]()
+    let row = char.position.row, col = char.position.col
+    for point in [(row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)] {
+      result.append(point)
+    }
+    return result
+  }
 }

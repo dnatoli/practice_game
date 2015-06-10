@@ -26,7 +26,7 @@ class MapTile: NSObject {
   }
   
   func isWalkable() -> Bool {
-    return type != .Obstacle
+    return ((type != .Obstacle) && (enemy == nil))
   }
 }
 
@@ -51,8 +51,8 @@ class Map: NSObject {
         allTiles[row].append(newTile)
       }
     }
-    for (x, y) in noWalk {
-      allTiles[x][y].type = .Obstacle
+    for position in noWalk {
+      tileAt(position)?.type = .Obstacle
     }
   }
   
