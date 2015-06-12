@@ -15,26 +15,26 @@ enum CharacterType {
 
 class Character: NSObject {
   var health: Int
-  var position: (row: Int, col: Int)
+  var space: MapTile
   let numMoves: Int, damage: Int, name: String
   let type: CharacterType
   var canMove = true, dead = false
   
-  init(player name: String, start: (row: Int, col: Int)) {
+  init(player name: String, start: MapTile) {
     health = 100
     numMoves = 4
     damage = 25
     self.name = name
-    position = start
+    space = start
     type = .Player
   }
   
-  init(enemy name: String, start: (row: Int, col: Int)) {
+  init(enemy name: String, start: MapTile) {
     health = 75
     numMoves = 3
     damage = 10
     self.name = name
-    position = start
+    space = start
     type = .Enemy
   }
   
@@ -50,8 +50,20 @@ class Character: NSObject {
     }
   }
   
-  func moveToSpace(tile: (row: Int, col: Int)) {
-    position = tile
+  func moveTo(tile: MapTile) {
+    space = tile
     canMove = false
+  }
+  
+  func range() -> [MapTile] {
+    var result = [space]
+    for step in 1...numMoves {
+      for tile in result {
+        for edge in tile.edges {
+          if !contains(result, edge.target) { result.append(edge.target) }
+        }
+      }
+    }
+    return result
   }
 }

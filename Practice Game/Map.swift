@@ -13,46 +13,71 @@ enum MapTileType {
   case Obstacle
 }
 
+// Represents an edge in the map's graph, where MapTiles are nodes.
+struct MapEdge {
+  let weight: Int
+  let source, target: MapTile
+}
+
+// Represents a node in the map's graph, as well as some associated game state.
 class MapTile: NSObject {
-  var type: MapTileType
+  let type: MapTileType
   let position: (row: Int, col: Int)
-  weak var view: MapTileView!
-  var enemy: Character?
-  weak var map: Map!
+  var edges = [MapEdge]()
+  var neighbors: [MapTile] {
+    return edges.map{ (edge: MapEdge) in edge.target }
+  }
+//  weak var view: MapTileView!
+  var occupant: Character?
   
-  init(tileType: MapTileType, at: (Int, Int)) {
+  init(tileType: MapTileType, at: (row: Int, col: Int)) {
     type = tileType
     position = at
   }
   
   func isWalkable() -> Bool {
-    return ((type != .Obstacle) && (enemy == nil))
+    return ((type != .Obstacle) && (occupant == nil))
   }
 }
 
 class Map: NSObject {
   var allTiles: [[MapTile]]
-  let rows: Int, cols: Int
+  let rows, cols: Int
   let playerStarts = [(4, 0)]
   let enemyStarts = [(4, 15)]
   
-  init(size: (rows: Int, cols: Int)) {
+  init(size: (rows: Int, cols: Int), noWalk: [(row: Int, col: Int)]) {
     rows = size.rows
     cols = size.cols
     allTiles = [[MapTile]]()
-  }
-  
-  // Builds the game map. Tiles at points contained in NOWALK will have obstacles, and the rest will be normal.
-  func populateMap(noWalk: [(Int, Int)] = []) {
+    
+    // Build MapTiles, adding obstacles to tiles in noWalk
     for row in 0..<rows {
       allTiles.append([MapTile]())
       for col in 0..<cols {
-        let newTile = MapTile(tileType: .Normal, at: (row, col))
+        let newTile: MapTile
+        if noWalk.filter({ $0.row == row && $0.col == col }).count > 0 {
+          newTile = MapTile(tileType: .Obstacle, at: (row, col))
+        } else {
+          newTile = MapTile(tileType: .Normal, at: (row, col))
+        }
         allTiles[row].append(newTile)
       }
     }
-    for position in noWalk {
-      tileAt(position)?.type = .Obstacle
+
+    // Build the graph of MapTiles
+    for row in 0..<rows {
+      for col in 0..<cols {
+        let source = allTiles[row][col]
+        for point in [(row, col + 1), (row, col - 1), (row + 1, col), (row - 1, col)] {
+          if point.0 >= 0 && point.0 < size.rows && point.1 >= 0 && point.1 < size.cols {
+            let target = allTiles[point.0][point.1]
+            if target.isWalkable() {
+              source.edges.append(MapEdge(weight: 1, source: source, target: target))
+            }
+          }
+        }
+      }
     }
   }
   
@@ -62,34 +87,6 @@ class Map: NSObject {
       return allTiles[position.row][position.col]
     }
     return nil
-  }
-  
-  /* Returns an array of all tiles reachable by CHAR within its number of moves. Accounts for
-     obstacles. */
-  func rangeOf(char: Character) -> [MapTile] {
-    var range = [MapTile]()
-    let start = char.position
-    range.append(tileAt(start)!)
-    for step in 1...char.numMoves {
-      for i in 0...step {
-        if let tile = tileAt((start.row + i, start.col + step - i)) where tile.isWalkable() {
-          range.append(tile)
-        }
-        if let tile = tileAt((start.row + i, start.col - step + i)) where tile.isWalkable() && i < step {
-          range.append(tile)
-        }
-        // Conditional to prevent double counting tiles in same row as start
-        if i > 0 {
-          if let tile = tileAt((start.row - i, start.col + step - i)) where tile.isWalkable() {
-            range.append(tile)
-          }
-          if let tile = tileAt((start.row - i, start.col - step + i)) where tile.isWalkable() && i < step {
-            range.append(tile)
-          }
-        }
-      }
-    }
-    return range
   }
 }
 

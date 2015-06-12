@@ -11,12 +11,11 @@ import UIKit
 class GameViewController: UIViewController {
   
   var tileViews = [[MapTileView]]()
-  var playerViews = [CharacterView]()
-  var enemyViews = [CharacterView]()
+  var playerViews = [CharacterView](), enemyViews = [CharacterView]()
   var activeChar: CharacterView?, returnSpace: MapTileView?
   var game: Game
-  let rows: Int, cols: Int
-  var menu: UIView!, playerMenu: UIView!
+  let rows, cols: Int
+  var menu, playerMenu: UIView!
   var menuDisplayed = false, playerDisplayed = false
   
   init(size: (rows: Int, cols: Int)) {
@@ -26,6 +25,7 @@ class GameViewController: UIViewController {
     super.init(nibName: nil, bundle: nil)
   }
   
+  // Unused
   required init(coder aDecoder: NSCoder) {
     rows = 1
     cols = 1
@@ -43,7 +43,7 @@ class GameViewController: UIViewController {
     playerMenu = buildPlayerMenu()
     
     for enemy in game.enemies {
-      game.tileAt(enemy.position)!.enemy = enemy
+      enemy.space.occupant = enemy
     }
     
     for row in 0..<rows {
@@ -54,7 +54,6 @@ class GameViewController: UIViewController {
           width: buttonWidth,
           height: buttonHeight)
         let newTile = MapTileView(tile: game.tileAt((row, col))!, frame: frame)
-        game.tileAt((row, col))!.view = newTile
         newTile.layer.borderColor = UIColor.blackColor().CGColor
         newTile.layer.borderWidth = 1.5
         view.addSubview(newTile)
@@ -64,16 +63,16 @@ class GameViewController: UIViewController {
     }
     
     for player in game.players {
-      let start = tileViewAt(player.position)!
-      let charView = CharacterView(character: player, frame: start.frame)
+      let start = tileViewAt(player.space.position)!
+      let charView = CharacterView(char: player, frame: start.frame)
       view.addSubview(charView)
       charView.addTarget(self, action: "playerSelected:", forControlEvents: .TouchUpInside)
       playerViews.append(charView)
     }
     
     for enemy in game.enemies {
-      let start = tileViewAt(enemy.position)!
-      let charView = CharacterView(character: enemy, frame: start.frame)
+      let start = tileViewAt(enemy.space.position)!
+      let charView = CharacterView(char: enemy, frame: start.frame)
       view.addSubview(charView)
       charView.addTarget(self, action: "enemySelected:", forControlEvents: .TouchUpInside)
       enemyViews.append(charView)
@@ -103,29 +102,29 @@ class GameViewController: UIViewController {
   }
   
   func moveCharacter(charView: CharacterView, to: MapTileView) {
-    returnSpace = tileViewAt(charView.character.position)
+    returnSpace = tileViewAt(charView.char.space.position)
     UIView.animateWithDuration(0.7, animations: {
       charView.center = to.center
       }, completion: { _ in
-        charView.character.moveToSpace(to.tile.position)
+        charView.char.moveTo(to.tile)
         self.displayPlayerMenu(to)
     })
-    for tile in game.map.rangeOf(charView.character) {
-      tile.view.backgroundColor = .clearColor()
+    for tile in charView.char.range() {
+      tileViewAt(tile.position)!.backgroundColor = .clearColor()
     }
   }
   
   func playerSelected(sender: CharacterView) {
     if game.turn == .Player {
-      if sender.character.canMove && !game.moving {
+      if sender.char.canMove && !game.moving {
         activeChar = sender
         game.moving = true;
-        let range = game.map.rangeOf(sender.character)
+        let range = sender.char.range()
         for tile in range {
-          tile.view.backgroundColor = UIColor.blueColor().colorWithAlphaComponent(0.3)
+          tileViewAt(tile.position)!.backgroundColor = UIColor.blueColor().colorWithAlphaComponent(0.3)
         }
       } else if game.moving {
-        moveCharacter(sender, to: tileViewAt(sender.character.position)!)
+        moveCharacter(sender, to: tileViewAt(sender.char.space.position)!)
       } else {
         displayMenu(sender)
       }
@@ -135,17 +134,17 @@ class GameViewController: UIViewController {
   func enemySelected(sender: CharacterView) {
     if game.turn == .Player {
       if !game.moving {
-        let range = game.map.rangeOf(sender.character)
-        if range[0].view.backgroundColor != UIColor.brownColor().colorWithAlphaComponent(0.3) {
-          for tile in range {
-            tile.view.backgroundColor = UIColor.brownColor().colorWithAlphaComponent(0.3)
+        let range = sender.char.range()
+        if tileViewAt(range[0].position)!.backgroundColor != UIColor.brownColor().colorWithAlphaComponent(0.3) {
+          for point in range.map({ $0.position }) {
+            tileViewAt(point)!.backgroundColor = UIColor.brownColor().colorWithAlphaComponent(0.3)
           }
         } else {
-          for tile in range {
-            tile.view.backgroundColor = .clearColor()
+          for point in range.map({ $0.position }) {
+            tileViewAt(point)!.backgroundColor = .clearColor()
           }
         }
-      } else if tileViewAt(sender.character.position)?.backgroundColor == UIColor.redColor().colorWithAlphaComponent(0.3) {
+      } else if tileViewAt(sender.char.space.position)!.backgroundColor == UIColor.redColor().colorWithAlphaComponent(0.3) {
         completeAttack(sender)
       }
     }
@@ -252,8 +251,8 @@ class GameViewController: UIViewController {
   }
   
   func attack(sender: UIButton) {
-    for position in game.adjacent(activeChar!.character) {
-      tileViewAt(position)?.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.3)
+    for tile in game.adjacent(activeChar!.char) {
+      tileViewAt(tile.position)?.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.3)
     }
     if playerDisplayed {
       playerMenu.removeFromSuperview()
@@ -271,9 +270,9 @@ class GameViewController: UIViewController {
   func cancelMove(sender: UIButton) {
     playerMenu.removeFromSuperview()
     if let tile = returnSpace?.tile {
-      activeChar?.character.moveToSpace(tile.position)
-      activeChar?.character.canMove = true
-      activeChar?.center = tile.view.center
+      activeChar?.char.moveTo(tile)
+      activeChar?.char.canMove = true
+      activeChar?.center = returnSpace!.center
     }
     activeChar = nil
     returnSpace = nil
@@ -281,13 +280,13 @@ class GameViewController: UIViewController {
   }
   
   func completeAttack(target: CharacterView) {
-    activeChar!.character.dealDamage(target.character)
-    for point in game.adjacent(activeChar!.character) {
-      tileViewAt(point)?.backgroundColor = .clearColor()
+    activeChar!.char.dealDamage(target.char)
+    for tile in game.adjacent(activeChar!.char) {
+      tileViewAt(tile.position)?.backgroundColor = .clearColor()
     }
-    if target.character.dead {
+    if target.char.dead {
       target.removeFromSuperview()
-      switch target.character.type {
+      switch target.char.type {
       case .Player:
         playerViews = playerViews.filter{$0 != target}
       case .Enemy:

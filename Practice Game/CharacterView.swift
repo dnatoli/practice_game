@@ -10,16 +10,16 @@ import UIKit
 
 class CharacterView: UIButton {
   
-  let character: Character
+  let char: Character
   
-  init(character: Character, frame: CGRect) {
-    self.character = character
+  init(char: Character, frame: CGRect) {
+    self.char = char
     super.init(frame:frame)
   }
   
   // Unused
   required init(coder aDecoder: NSCoder) {
-    self.character = Character(enemy: "", start: (0, 0))
+    self.char = Character(player: "Player 0", start: MapTile(tileType: .Normal, at: (0, 0)))
     super.init(coder: aDecoder)
   }
   
@@ -28,9 +28,9 @@ class CharacterView: UIButton {
   override func drawRect(rect: CGRect) {
     // Drawing code
     let shape = UIBezierPath(ovalInRect: self.bounds)
-    switch character.type {
+    switch char.type {
     case .Player:
-      if (character.canMove) {
+      if (char.canMove) {
         UIColor.blueColor().setFill()
       } else {
         UIColor.grayColor().setFill()

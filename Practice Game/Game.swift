@@ -18,15 +18,16 @@ class Game: NSObject {
   
   init(mapSize: (rows: Int, cols: Int), numPlayers: Int, numEnemies: Int) {
     turn = .Player
-    self.map = Map(size: mapSize)
-    map.populateMap(noWalk: [(0, 0)])
+    self.map = Map(size: mapSize, noWalk: [(3, 9)])
+    let playerStarts = [(4, 0)]
+    let enemyStarts = [(4, 15)]
     players = [Character]()
     enemies = [Character]()
     for i in 0..<numPlayers {
-      players.append(Character(player: "Player \(i)", start: map.playerStarts[i]))
+      players.append(Character(player: "Player \(i)", start: map.tileAt(playerStarts[i])!))
     }
     for j in 0..<numEnemies {
-      enemies.append(Character(enemy: "Enemy \(j)", start: map.enemyStarts[j]))
+      enemies.append(Character(enemy: "Enemy \(j)", start: map.tileAt(enemyStarts[j])!))
     }
   }
   
@@ -66,12 +67,7 @@ class Game: NSObject {
     }
   }
   
-  func adjacent(char: Character) -> [(Int, Int)] {
-    var result = [(Int, Int)]()
-    let row = char.position.row, col = char.position.col
-    for point in [(row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)] {
-      result.append(point)
-    }
-    return result
+  func adjacent(char: Character) -> [MapTile] {
+    return char.space.neighbors
   }
 }
