@@ -11,6 +11,7 @@ import UIKit
 class MapTileView: UIButton {
   
   var tile: MapTile
+  var enemyHighlighted = false
   
   init(tile: MapTile, frame: CGRect) {
     self.tile = tile
@@ -30,6 +31,9 @@ class MapTileView: UIButton {
     super.drawRect(rect)
     if tile.type == .Obstacle {
       UIColor.blackColor().colorWithAlphaComponent(0.4).setFill()
+      CGContextFillRect(UIGraphicsGetCurrentContext(), rect)
+    } else if enemyHighlighted {
+      UIColor.brownColor().colorWithAlphaComponent(0.3).setFill()
       CGContextFillRect(UIGraphicsGetCurrentContext(), rect)
     }
   }

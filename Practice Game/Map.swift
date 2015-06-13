@@ -25,9 +25,8 @@ class MapTile: NSObject {
   let position: (row: Int, col: Int)
   var edges = [MapEdge]()
   var neighbors: [MapTile] {
-    return edges.map{ (edge: MapEdge) in edge.target }
+    return edges.map{ $0.target }
   }
-//  weak var view: MapTileView!
   var occupant: Character?
   
   init(tileType: MapTileType, at: (row: Int, col: Int)) {
@@ -56,7 +55,7 @@ class Map: NSObject {
       allTiles.append([MapTile]())
       for col in 0..<cols {
         let newTile: MapTile
-        if noWalk.filter({ $0.row == row && $0.col == col }).count > 0 {
+        if noWalk.filter({ $0 == row && $1 == col }).count > 0 {
           newTile = MapTile(tileType: .Obstacle, at: (row, col))
         } else {
           newTile = MapTile(tileType: .Normal, at: (row, col))
@@ -65,7 +64,8 @@ class Map: NSObject {
       }
     }
 
-    // Build the graph of MapTiles
+    // Build the graph of MapTiles. Done in separate loop because it requires all tiles to be
+    // instantiated.
     for row in 0..<rows {
       for col in 0..<cols {
         let source = allTiles[row][col]

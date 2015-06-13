@@ -12,7 +12,6 @@ class Game: NSObject {
   var turn: CharacterType
   let map: Map
   var players: [Character], enemies: [Character]
-  var moving = false
   weak var controller: GameViewController?
   var winner: CharacterType? = nil
   
@@ -65,9 +64,5 @@ class Game: NSObject {
     } else if enemies.count == 0 {
       winner = .Player
     }
-  }
-  
-  func adjacent(char: Character) -> [MapTile] {
-    return char.space.neighbors
   }
 }
