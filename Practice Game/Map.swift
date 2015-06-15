@@ -43,7 +43,7 @@ class Map: NSObject {
   var allTiles: [[MapTile]]
   let rows, cols: Int
   let playerStarts = [(4, 0)]
-  let enemyStarts = [(4, 15)]
+  let enemyStarts = [(3, 15)]
   
   init(size: (rows: Int, cols: Int), noWalk: [(row: Int, col: Int)]) {
     rows = size.rows

@@ -18,6 +18,9 @@ class Character: NSObject {
   var space: MapTile
   let numMoves: Int, damage: Int, name: String
   let type: CharacterType
+  var neighbors: [MapTile] {
+    return space.neighbors
+  }
   var canMove = true, dead = false
   
   init(player name: String, start: MapTile) {
@@ -44,7 +47,6 @@ class Character: NSObject {
   
   func takeDamage(amount: Int) {
     health -= amount
-    println("ARG I'M HIT")
     if health <= 0 {
       dead = true
     }

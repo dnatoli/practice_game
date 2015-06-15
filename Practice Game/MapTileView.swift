@@ -30,7 +30,7 @@ class MapTileView: UIButton {
     // Drawing code
     super.drawRect(rect)
     if tile.type == .Obstacle {
-      UIColor.blackColor().colorWithAlphaComponent(0.4).setFill()
+      UIColor.blackColor().colorWithAlphaComponent(0.2).setFill()
       CGContextFillRect(UIGraphicsGetCurrentContext(), rect)
     } else if enemyHighlighted {
       UIColor.brownColor().colorWithAlphaComponent(0.3).setFill()
