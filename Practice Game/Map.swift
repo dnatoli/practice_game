@@ -27,7 +27,7 @@ class MapTile: NSObject {
   var neighbors: [MapTile] {
     return edges.map{ $0.target }
   }
-  var occupant: Character?
+  weak var occupant: Character?
   
   init(tileType: MapTileType, at: (row: Int, col: Int)) {
     type = tileType

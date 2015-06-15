@@ -25,10 +25,14 @@ class Game: NSObject {
     players = [Character]()
     enemies = [Character]()
     for i in 0..<numPlayers {
-      players.append(Character(player: "Player \(i)", start: map.tileAt(playerStarts[i])!))
+      let newPlayer = Character(player: "Player \(i)", start: map.tileAt(playerStarts[i])!)
+      newPlayer.space.occupant = newPlayer
+      players.append(newPlayer)
     }
     for j in 0..<numEnemies {
-      enemies.append(Character(enemy: "Enemy \(j)", start: map.tileAt(enemyStarts[j])!))
+      let newEnemy = Character(enemy: "Enemy \(j)", start: map.tileAt(enemyStarts[j])!)
+      newEnemy.space.occupant = newEnemy
+      enemies.append(newEnemy)
     }
   }
   
@@ -37,7 +41,17 @@ class Game: NSObject {
       player.canMove = true
     }
     turn = .Enemy
-    println("ENEMY TURN HERE")
+    for enemy in enemies {
+      for tile in enemy.attackRange() {
+        if let target = tile.occupant where target.type == .Player {
+          let range = enemy.range()
+          let dest = target.neighbors.filter({contains(range, $0)})[0]
+          controller!.moveEnemy(enemy, to: dest)
+          attack(enemy, target: target)
+          controller!.completeEnemyAttack(target)
+        }
+      }
+    }
     turn = .Player
   }
   

@@ -50,10 +50,6 @@ class GameViewController: UIViewController {
     imageView.image = backgroundImage
     view.addSubview(imageView)
     
-    for enemy in game.enemies {
-      enemy.space.occupant = enemy
-    }
-    
     for row in 0..<rows {
       tileViews.append([MapTileView]())
       for col in 0..<cols {
@@ -113,13 +109,19 @@ class GameViewController: UIViewController {
     }
   }
   
+  func moveEnemy(char: Character, to: MapTile) {
+    let enemy = enemyViews.filter({$0.char == char})[0]
+    moveCharacter(enemy, to: tileViewAt(to.position)!)
+  }
+  
   func moveCharacter(charView: CharacterView, to: MapTileView) {
-    returnSpace = tileViewFromChar(charView)
+    let currentTurn = game.turn
+    if currentTurn == .Player { returnSpace = tileViewFromChar(charView) }
     UIView.animateWithDuration(0.7, animations: {
       charView.center = to.center
       }, completion: { _ in
         charView.char.moveTo(to.tile)
-        self.displayPlayerMenu(to)
+        if currentTurn == .Player { self.displayPlayerMenu(to) }
     })
     for tile in charView.char.range() {
       tileViewAt(tile.position)!.backgroundColor = .clearColor()
@@ -169,41 +171,49 @@ class GameViewController: UIViewController {
   }
   
   func displayPlayerMenu(sender: UIButton) {
-    let y: CGFloat
-    let diff = playerMenu.frame.size.height / 2
-    if sender.center.y < diff + 50 {
-      y = sender.center.y + diff
-    } else {
-      y = sender.center.y - diff
-    }
-    playerMenu.center = CGPoint(x: sender.center.x, y: y)
-    if let neighbors = activeChar?.char.neighbors {
-      if neighbors.filter({ $0.occupant != nil }).count == 0 {
-        var button = playerMenu.subviews[0] as! UIButton
-        button.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        button.userInteractionEnabled = false
+    if game.turn == .Player {
+      let y: CGFloat
+      let diff = playerMenu.frame.size.height / 2
+      if sender.center.y < diff + 50 {
+        y = sender.center.y + diff
       } else {
-        var button = playerMenu.subviews[0] as! UIButton
-        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        button.userInteractionEnabled = true
+        y = sender.center.y - diff
       }
+      playerMenu.center = CGPoint(x: sender.center.x, y: y)
+      if let neighbors = activeChar?.char.neighbors {
+        if neighbors.filter({ $0.occupant != nil }).count == 0 {
+          var button = playerMenu.subviews[0] as! UIButton
+          button.setTitleColor(UIColor.grayColor(), forState: .Normal)
+          button.userInteractionEnabled = false
+        } else {
+          var button = playerMenu.subviews[0] as! UIButton
+          button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+          button.userInteractionEnabled = true
+        }
+      }
+      view.addSubview(playerMenu)
+      playerDisplayed = true
+    } else {
+      println("Didn't show menu")
     }
-    view.addSubview(playerMenu)
-    playerDisplayed = true
   }
   
   func displayMenu(sender: UIButton) {
-    let y: CGFloat
-    let diff = menu.frame.size.height / 2
-    if sender.center.y < diff + 50 {
-      y = sender.center.y + diff
+    if game.turn == .Player {
+      let y: CGFloat
+      let diff = menu.frame.size.height / 2
+      if sender.center.y < diff + 50 {
+        y = sender.center.y + diff
+      } else {
+        y = sender.center.y - diff
+      }
+      
+      menu.center = CGPoint(x: sender.center.x, y: y)
+      menuDisplayed = true
+      view.addSubview(menu)
     } else {
-      y = sender.center.y - diff
+      println("Didn't show menu")
     }
-    
-    menu.center = CGPoint(x: sender.center.x, y: y)
-    menuDisplayed = true
-    view.addSubview(menu)
   }
   
   func removeMenu(sender: UIButton) {
@@ -325,12 +335,7 @@ class GameViewController: UIViewController {
     }
     if target.char.dead {
       target.removeFromSuperview()
-      switch target.char.type {
-      case .Player:
-        playerViews = playerViews.filter{$0 != target}
-      case .Enemy:
-        enemyViews = enemyViews.filter{$0 != target}
-      }
+      enemyViews = enemyViews.filter{$0 != target}
     }
     attacking = false
     endMove(activeChar!)
@@ -339,9 +344,21 @@ class GameViewController: UIViewController {
     }
   }
   
+  func completeEnemyAttack(target: Character) {
+    let player = playerViews.filter({$0.char == target})[0]
+    if target.dead {
+      player.removeFromSuperview()
+      playerViews = playerViews.filter{$0 != target}
+    }
+    if game.winner != nil {
+      println("Made it here!")
+      endGame(game.winner!)
+    }
+  }
+  
   func endGame(winner: CharacterType) {
     var message = winner == .Player ? "Congratulations!" : "Too bad!"
-    message += " Play Again?"
+    message += " Play again?"
     var gameOver = UIButton(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 250, height: 50)))
     gameOver.backgroundColor = .whiteColor()
     gameOver.layer.borderColor = UIColor.blackColor().CGColor
@@ -370,9 +387,6 @@ class GameViewController: UIViewController {
     enemyViews = [CharacterView]()
     tileViews = [[MapTileView]]()
     game = Game(mapSize: (rows: rows, cols: cols), numPlayers: numPlayers, numEnemies: numEnemies)
-    for char in game.players {
-      println("\(char.numMoves)")
-    }
     moving = false
     attacking = false
     loadView()

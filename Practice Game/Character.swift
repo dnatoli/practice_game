@@ -24,7 +24,7 @@ class Character: NSObject {
   var canMove = true, dead = false
   
   init(player name: String, start: MapTile) {
-    health = 100
+    health = 10
     numMoves = 4
     damage = 25
     self.name = name
@@ -50,9 +50,12 @@ class Character: NSObject {
     if health <= 0 {
       dead = true
     }
+    println("Arg, I'm hit! \(health) life left")
   }
   
   func moveTo(tile: MapTile) {
+    space.occupant = nil
+    tile.occupant = self
     space = tile
     canMove = false
   }
@@ -60,6 +63,18 @@ class Character: NSObject {
   func range() -> [MapTile] {
     var result = [space]
     for step in 1...numMoves {
+      for tile in result {
+        for edge in tile.edges {
+          if !contains(result, edge.target) { result.append(edge.target) }
+        }
+      }
+    }
+    return result
+  }
+  
+  func attackRange() -> [MapTile] {
+    var result = [space]
+    for step in 1...numMoves+1 {
       for tile in result {
         for edge in tile.edges {
           if !contains(result, edge.target) { result.append(edge.target) }
