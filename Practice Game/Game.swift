@@ -20,8 +20,8 @@ class Game: NSObject {
     let noWalk = [(row: 7, col: 0), (row: 8, col: 0), (row: 0, col: 1), (row: 1, col: 10), (row: 5, col: 11), (row: 4, col: 13), (row: 4, col: 14)]
       + [(row: 1, col: 11), (row: 3, col: 12), (row: 4, col: 12), (row: 8, col: 8), (row: 7, col: 9), (row: 7, col: 10), (row: 6, col: 11), (row: 4, col: 15)]
     self.map = Map(size: mapSize, noWalk: noWalk)
-    let playerStarts = [(4, 0)]
-    let enemyStarts = [(3, 15)]
+    let playerStarts = [(3, 0), (7, 3), (0, 5)]
+    let enemyStarts = [(3, 15), (6, 9), (0, 10)]
     players = [Character]()
     enemies = [Character]()
     for i in 0..<numPlayers {
@@ -49,6 +49,7 @@ class Game: NSObject {
           controller!.moveEnemy(enemy, to: dest)
           attack(enemy, target: target)
           controller!.completeEnemyAttack(target)
+          break
         }
       }
     }

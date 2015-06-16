@@ -72,7 +72,7 @@ class Map: NSObject {
         for point in [(row, col + 1), (row, col - 1), (row + 1, col), (row - 1, col)] {
           if point.0 >= 0 && point.0 < size.rows && point.1 >= 0 && point.1 < size.cols {
             let target = allTiles[point.0][point.1]
-            if target.isWalkable() {
+            if target.type != .Obstacle {
               source.edges.append(MapEdge(weight: 1, source: source, target: target))
             }
           }
