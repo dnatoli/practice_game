@@ -18,7 +18,7 @@ class GameViewController: UIViewController {
   var newGame = false
   var game: Game
   let rows, cols: Int
-  let numPlayers = 1, numEnemies = 1
+  let numPlayers = 3, numEnemies = 3
   var menu, playerMenu: UIView!
   var menuDisplayed = false, playerDisplayed = false
   
@@ -191,10 +191,10 @@ class GameViewController: UIViewController {
           button.userInteractionEnabled = true
         }
       }
+      let health = playerMenu.subviews[3] as! UILabel
+      health.text = "Health: \(activeChar!.char.health)"
       view.addSubview(playerMenu)
       playerDisplayed = true
-    } else {
-      println("Didn't show menu")
     }
   }
   
@@ -261,7 +261,7 @@ class GameViewController: UIViewController {
   }
   
   func buildPlayerMenu() -> UIView {
-    var playerMenu = UIView(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 100, height: 90)))
+    var playerMenu = UIView(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 100, height: 120)))
     playerMenu.backgroundColor = .whiteColor()
     playerMenu.layer.borderColor = UIColor.blueColor().CGColor
     playerMenu.layer.borderWidth = 1.0
@@ -286,6 +286,11 @@ class GameViewController: UIViewController {
     cancelButton.setTitle("Cancel", forState: .Normal)
     cancelButton.addTarget(self, action: "cancelMove:", forControlEvents: .TouchUpInside)
     playerMenu.addSubview(cancelButton)
+    
+    let healthOrigin = CGPoint(x: playerMenu.frame.origin.x, y: playerMenu.frame.origin.y + 90)
+    let health = UILabel(frame: CGRect(origin: healthOrigin, size: CGSize(width: 100, height: 30)))
+    health.textAlignment = .Center
+    playerMenu.addSubview(health)
     
     return playerMenu
   }
