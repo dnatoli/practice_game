@@ -18,7 +18,7 @@ class GameViewController: UIViewController {
   var newGame = false
   var game: Game
   let rows, cols: Int
-  let numPlayers = 3, numEnemies = 3
+  let numPlayers = 1, numEnemies = 3
   var menu, playerMenu: UIView!
   var menuDisplayed = false, playerDisplayed = false
   
