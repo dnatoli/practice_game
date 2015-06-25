@@ -64,7 +64,7 @@ class Character: NSObject {
     for step in 1...numMoves {
       for tile in result {
         for target in tile.edges.map({$0.target}) {
-          if !contains(result, target) && target.isWalkable() { result.append(target) }
+          if !result.contains(target) && target.isWalkable() { result.append(target) }
         }
       }
     }
@@ -76,7 +76,7 @@ class Character: NSObject {
     for step in 1...numMoves+1 {
       for tile in result {
         for edge in tile.edges {
-          if !contains(result, edge.target) { result.append(edge.target) }
+          if !result.contains(edge.target) { result.append(edge.target) }
         }
       }
     }

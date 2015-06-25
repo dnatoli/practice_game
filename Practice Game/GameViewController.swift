@@ -137,7 +137,7 @@ class GameViewController: UIViewController {
         for tile in range {
           tileViewAt(tile.position)!.backgroundColor = UIColor.blueColor().colorWithAlphaComponent(0.3)
         }
-        for tile in sender.char.attackRange().filter({!contains(range, $0)}) {
+        for tile in sender.char.attackRange().filter({!range.contains($0)}) {
           tileViewAt(tile.position)!.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.3)
         }
       } else if moving {
@@ -185,11 +185,11 @@ class GameViewController: UIViewController {
       playerMenu.center = CGPoint(x: sender.center.x, y: y)
       if let neighbors = activeChar?.char.neighbors {
         if neighbors.filter({ $0.occupant != nil }).count == 0 {
-          var button = playerMenu.subviews[0] as! UIButton
+          let button = playerMenu.subviews[0] as! UIButton
           button.setTitleColor(UIColor.grayColor(), forState: .Normal)
           button.userInteractionEnabled = false
         } else {
-          var button = playerMenu.subviews[0] as! UIButton
+          let button = playerMenu.subviews[0] as! UIButton
           button.setTitleColor(UIColor.blackColor(), forState: .Normal)
           button.userInteractionEnabled = true
         }
@@ -215,7 +215,7 @@ class GameViewController: UIViewController {
       menuDisplayed = true
       view.addSubview(menu)
     } else {
-      println("Didn't show menu")
+      print("Didn't show menu")
     }
   }
   
@@ -241,20 +241,20 @@ class GameViewController: UIViewController {
   }
   
   func buildMenu() -> UIView {
-    var menu = UIView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 100, height: 60)))
+    let menu = UIView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 100, height: 60)))
     menu.backgroundColor = .whiteColor()
     menu.layer.borderColor = UIColor.blueColor().CGColor
     menu.layer.borderWidth = 1.0
     
     let endOrigin = menu.frame.origin
-    var endButton = UIButton(frame: CGRect(origin: endOrigin, size: CGSize(width: 100, height: 30)))
+    let endButton = UIButton(frame: CGRect(origin: endOrigin, size: CGSize(width: 100, height: 30)))
     endButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     endButton.setTitle("End Turn", forState: .Normal)
     endButton.addTarget(self, action: "endTurn:", forControlEvents: .TouchUpInside)
     menu.addSubview(endButton)
     
     let cancelOrigin = CGPoint(x: menu.frame.origin.x, y: menu.frame.origin.y + 30)
-    var cancelButton = UIButton(frame: CGRect(origin: cancelOrigin, size: CGSize(width: 100, height: 30)))
+    let cancelButton = UIButton(frame: CGRect(origin: cancelOrigin, size: CGSize(width: 100, height: 30)))
     cancelButton.setTitle("Cancel", forState: .Normal)
     cancelButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     cancelButton.addTarget(self, action: "removeMenu:", forControlEvents: .TouchUpInside)
@@ -264,27 +264,27 @@ class GameViewController: UIViewController {
   }
   
   func buildPlayerMenu() -> UIView {
-    var playerMenu = UIView(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 100, height: 120)))
+    let playerMenu = UIView(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 100, height: 120)))
     playerMenu.backgroundColor = .whiteColor()
     playerMenu.layer.borderColor = UIColor.blueColor().CGColor
     playerMenu.layer.borderWidth = 1.0
     
     let attackOrigin = playerMenu.frame.origin
-    var attackButton = UIButton(frame: CGRect(origin: attackOrigin, size: CGSize(width: 100, height: 30)))
+    let attackButton = UIButton(frame: CGRect(origin: attackOrigin, size: CGSize(width: 100, height: 30)))
     attackButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     attackButton.setTitle("Attack", forState: .Normal)
     attackButton.addTarget(self, action: "attack:", forControlEvents: .TouchUpInside)
     playerMenu.addSubview(attackButton)
     
     let endOrigin = CGPoint(x: playerMenu.frame.origin.x, y: playerMenu.frame.origin.y + 30)
-    var endButton = UIButton(frame: CGRect(origin: endOrigin, size: CGSize(width: 100, height: 30)))
+    let endButton = UIButton(frame: CGRect(origin: endOrigin, size: CGSize(width: 100, height: 30)))
     endButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     endButton.setTitle("End", forState: .Normal)
     endButton.addTarget(self, action: "endMove:", forControlEvents: .TouchUpInside)
     playerMenu.addSubview(endButton)
     
     let cancelOrigin = CGPoint(x: playerMenu.frame.origin.x, y: playerMenu.frame.origin.y + 60)
-    var cancelButton = UIButton(frame: CGRect(origin: cancelOrigin, size: CGSize(width: 100, height: 30)))
+    let cancelButton = UIButton(frame: CGRect(origin: cancelOrigin, size: CGSize(width: 100, height: 30)))
     cancelButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     cancelButton.setTitle("Cancel", forState: .Normal)
     cancelButton.addTarget(self, action: "cancelMove:", forControlEvents: .TouchUpInside)
@@ -359,7 +359,7 @@ class GameViewController: UIViewController {
       playerViews = playerViews.filter{$0 != target}
     }
     if game.winner != nil {
-      println("Made it here!")
+      print("Made it here!")
       endGame(game.winner!)
     }
   }
@@ -367,7 +367,7 @@ class GameViewController: UIViewController {
   func endGame(winner: CharacterType) {
     var message = winner == .Player ? "Congratulations!" : "Too bad!"
     message += " Play again?"
-    var gameOver = UIButton(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 250, height: 50)))
+    let gameOver = UIButton(frame: CGRect(origin: view.frame.origin, size: CGSize(width: 250, height: 50)))
     gameOver.backgroundColor = .whiteColor()
     gameOver.layer.borderColor = UIColor.blackColor().CGColor
     gameOver.layer.borderWidth = 1.5
@@ -400,8 +400,8 @@ class GameViewController: UIViewController {
     loadView()
   }
   
-  override func supportedInterfaceOrientations() -> Int {
-    return Int(UIInterfaceOrientationMask.Landscape.rawValue)
+  override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+    return UIInterfaceOrientationMask.Landscape
   }
   
   override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {

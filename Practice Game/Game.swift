@@ -45,7 +45,7 @@ class Game: NSObject {
       for tile in enemy.attackRange() {
         if let target = tile.occupant where target.type == .Player {
           let range = enemy.range()
-          let dest = target.neighbors.filter({contains(range, $0)})[0]
+          let dest = target.neighbors.filter({range.contains($0)})[0]
           controller!.moveEnemy(enemy, to: dest)
           attack(enemy, target: target)
           controller!.completeEnemyAttack(target)
