@@ -13,7 +13,7 @@ class GameViewController: UIViewController {
   var tileViews = [[MapTileView]]()
   var playerViews = [CharacterView](), enemyViews = [CharacterView]()
   var activeChar: CharacterView? = nil, returnSpace: MapTileView? = nil
-  let backgroundImage = UIImage(data: NSData(contentsOfURL: NSURL(string: "http://old.serenesforest.net/fe7/map/14.PNG")!)!)
+  let backgroundImage = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://old.serenesforest.net/fe7/map/14.PNG")!)!)
   var moving = false, attacking = false
   var newGame = false
   var game: Game
@@ -30,7 +30,7 @@ class GameViewController: UIViewController {
   }
   
   // Unused
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     rows = 1
     cols = 1
     game = Game(mapSize: (rows, cols), numPlayers: 0, numEnemies: 0)

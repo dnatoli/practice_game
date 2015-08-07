@@ -19,7 +19,7 @@ class MapTileView: UIButton {
   }
   
   // Unused
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     self.tile = MapTile(tileType: .Normal, at: (0, 0))
     super.init(coder: aDecoder)
   }
